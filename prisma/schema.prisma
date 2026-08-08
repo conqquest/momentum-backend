@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// We will use sqlite for local development since setting up postgres requires external services, 
+// Using PostgreSQL for Render deployment
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String     @id @default(uuid())
+  firebaseUid   String     @unique
+  email         String?    @unique
+  displayName   String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  // Settings
+  themeColor    String     @default("default")
+  weight        Float?
+  height        Float?
+  age           Int?
+  gender        String?
+  
+  // Relations
+  habits        Habit[]
+  dailyLogs     DailyLog[]
+}
+
+model Habit {
+  id          String   @id @default(uuid())
+  name        String
+  category    String
+  createdAt   DateTime @default(now())
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model DailyLog {
+  id             String   @id @default(uuid())
+  date           String   // Format YYYY-MM-DD
+  
+  // Journaling
+  morningReflect String?
+  eveningReflect String?
+  momentText     String?
+  moodDetail     String?
+  
+  // Nutrition & Fitness
+  protein        Int      @default(0)
+  carbs          Int      @default(0)
+  fats           Int      @default(0)
+  iron           Int      @default(0)
+  steps          Int      @default(0)
+  
+  // Habits Check-in (store IDs of completed habits)
+  habitsChecked  String   @default("[]") // JSON stringified array of habit IDs
+  
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+}
