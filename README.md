@@ -29,10 +29,11 @@ Backend API for the **Momentum** habit tracker app. Built with Node.js, Express,
 2. Create a **New Web Service** on [Render](https://render.com).
 3. Connect your GitHub repo.
 4. Set these values:
-   - **Build Command**: `npm install && npm run build`
+   - **Build Command**: `npm install && npm run build && npx prisma db push`
    - **Start Command**: `npm start`
 5. Add a **PostgreSQL** database on Render (free tier available).
 6. Add the `DATABASE_URL` environment variable (Render auto-provides this if you link the DB).
+   *(By adding `npx prisma db push` to the Build Command, you won't need a shell to create your database tables; they will be generated automatically when the app builds).*
 
 ## Local Development
 
